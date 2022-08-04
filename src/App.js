@@ -3,6 +3,7 @@ import React from "react";
 import {
   AmbientLight,
   AxesHelper,
+  Color,
   DirectionalLight,
   GridHelper,
   PerspectiveCamera,
@@ -10,12 +11,13 @@ import {
   WebGLRenderer,
 } from "three";
 
+import * as THREE from "three";
+
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { IFCLoader } from "web-ifc-three/IFCLoader";
 
 function App() {
   const ifcLoader = new IFCLoader();
-  ifcLoader.ifcManager.setWasmPath("../wasm/web-ifc.wasm");
 
   const scene = new Scene();
   const refConvas = React.useRef(null);
@@ -23,6 +25,7 @@ function App() {
   const [file, setFile] = React.useState(null);
   React.useEffect(() => {
     const { innerWidth: width, innerHeight: height } = window;
+    ifcLoader.ifcManager.setWasmPath("wasm/");
 
     const size = {
       width: 800,
@@ -70,10 +73,15 @@ function App() {
     animate();
 
     // const ifcURL = URL.createObjectURL(file);
-    ifcLoader.load(file, (ifcModel) => {
-      scene.add(ifcModel);
-      console.log(ifcModel);
-    });
+    console.log(file);
+    if (file) {
+      const url = URL.createObjectURL(file);
+      console.log(url);
+      ifcLoader.load(url, (ifcModel) => {
+        scene.add(ifcModel);
+        console.log(ifcModel);
+      });
+    }
   }, [file]);
   console.log(file);
   return (
